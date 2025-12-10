@@ -21,8 +21,9 @@ RUN poetry install --no-root --no-interaction --no-ansi --only main
 
 # Copy application code
 COPY *.py ./
+COPY consumers/ ./consumers/
 
 RUN useradd -m -u 1000 appuser && chown -R appuser:appuser /app
 USER appuser
 
-CMD ["python", "consumer.py"]
+CMD ["python", "-m", "consumers.simulate_conversations"]

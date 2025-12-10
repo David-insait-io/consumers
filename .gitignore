@@ -37,8 +37,7 @@ wheels/
 *.log
 
 # Test results
-t_result_*.json
-test_result_*.json
+tests/results/
 results/
 
 # OS
