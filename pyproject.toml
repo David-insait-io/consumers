@@ -1,0 +1,40 @@
+[tool.poetry]
+name = "simulation-consumer"
+version = "0.1.0"
+description = "Kafka consumer for LLM conversation simulation"
+authors = ["Your Name <your.email@example.com>"]
+readme = "README.md"
+packages = [{ include = "*.py" }]
+
+[tool.poetry.dependencies]
+python = "^3.13"
+confluent-kafka = "^2.12.2"
+litellm = "^1.80.9"
+aiohttp = "^3.13.2"
+aiolimiter = "^1.2.1"
+pydantic = "^2.12.5"
+python-json-logger = "^4.0.0"
+python-dotenv = "^1.2.1"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^9.0.2"
+pytest-asyncio = "^1.3.0"
+pytest-cov = "^7.0.0"
+
+[tool.poetry.scripts]
+consumer = "consumer:main"
+test-local = "test_local:main"
+
+[build-system]
+requires = ["poetry-core>=2.2.1"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.mypy]
+python_version = "3.13"
+warn_return_any = true
+warn_unused_ignores = true
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]

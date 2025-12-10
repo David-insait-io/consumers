@@ -1,0 +1,163 @@
+version: '3.8'
+
+services:
+  # Kafka (for local testing)
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.5.0
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - "2181:2181"
+
+  kafka:
+    image: confluentinc/cp-kafka:7.5.0
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
+      - "9094:9094"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:9094
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+
+  # Initialize Kafka topic
+  kafka-init:
+    image: confluentinc/cp-kafka:7.5.0
+    depends_on:
+      - kafka
+    entrypoint: ["/bin/sh", "-c"]
+    command: |
+      "
+      echo 'Waiting for Kafka to be ready...'
+      cub kafka-ready -b kafka:9092 1 30
+      echo 'Creating topic: simulation-events'
+      kafka-topics --create --if-not-exists --bootstrap-server kafka:9092 --partitions 10 --replication-factor 1 --topic simulation-events
+      echo 'Topic created successfully'
+      "
+
+  # Simulation Consumer (5 instances)
+  consumer-1:
+    build: .
+    depends_on:
+      - kafka
+      - kafka-init
+    environment:
+      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      KAFKA_TOPIC: simulation-events
+      KAFKA_CONSUMER_GROUP: simulation-consumer-group
+      CONCURRENT_CONVERSATIONS: 20
+      LLM_RATE_LIMIT_RPS: 10
+      MAX_ITERATIONS: 10
+      CONVERSATION_TIMEOUT: 300
+      LLM_TIMEOUT: 30
+      LLM_RETRY_ATTEMPTS: 3
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      OPENAI_API_BASE: ${OPENAI_API_BASE}
+      OPENAI_API_VERSION: ${OPENAI_API_VERSION}
+      PERSONA_LLM_MODEL: ${PERSONA_LLM_MODEL:-azure/gpt-5-chat}
+      AGENT_URL: ${AGENT_URL}
+      AGENT_PORT: ${AGENT_PORT:-5000}
+      AGENT_JWT_TOKEN: ${AGENT_JWT_TOKEN}
+    restart: unless-stopped
+
+  consumer-2:
+    build: .
+    depends_on:
+      - kafka
+      - kafka-init
+    environment:
+      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      KAFKA_TOPIC: simulation-events
+      KAFKA_CONSUMER_GROUP: simulation-consumer-group
+      CONCURRENT_CONVERSATIONS: 20
+      LLM_RATE_LIMIT_RPS: 10
+      MAX_ITERATIONS: 10
+      CONVERSATION_TIMEOUT: 300
+      LLM_TIMEOUT: 30
+      LLM_RETRY_ATTEMPTS: 3
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      OPENAI_API_BASE: ${OPENAI_API_BASE}
+      OPENAI_API_VERSION: ${OPENAI_API_VERSION}
+      PERSONA_LLM_MODEL: ${PERSONA_LLM_MODEL:-azure/gpt-5-chat}
+      AGENT_URL: ${AGENT_URL}
+      AGENT_PORT: ${AGENT_PORT:-5000}
+      AGENT_JWT_TOKEN: ${AGENT_JWT_TOKEN}
+    restart: unless-stopped
+
+  consumer-3:
+    build: .
+    depends_on:
+      - kafka
+      - kafka-init
+    environment:
+      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      KAFKA_TOPIC: simulation-events
+      KAFKA_CONSUMER_GROUP: simulation-consumer-group
+      CONCURRENT_CONVERSATIONS: 20
+      LLM_RATE_LIMIT_RPS: 10
+      MAX_ITERATIONS: 10
+      CONVERSATION_TIMEOUT: 300
+      LLM_TIMEOUT: 30
+      LLM_RETRY_ATTEMPTS: 3
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      OPENAI_API_BASE: ${OPENAI_API_BASE}
+      OPENAI_API_VERSION: ${OPENAI_API_VERSION}
+      PERSONA_LLM_MODEL: ${PERSONA_LLM_MODEL:-azure/gpt-5-chat}
+      AGENT_URL: ${AGENT_URL}
+      AGENT_PORT: ${AGENT_PORT:-5000}
+      AGENT_JWT_TOKEN: ${AGENT_JWT_TOKEN}
+    restart: unless-stopped
+
+  consumer-4:
+    build: .
+    depends_on:
+      - kafka
+      - kafka-init
+    environment:
+      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      KAFKA_TOPIC: simulation-events
+      KAFKA_CONSUMER_GROUP: simulation-consumer-group
+      CONCURRENT_CONVERSATIONS: 20
+      LLM_RATE_LIMIT_RPS: 10
+      MAX_ITERATIONS: 10
+      CONVERSATION_TIMEOUT: 300
+      LLM_TIMEOUT: 30
+      LLM_RETRY_ATTEMPTS: 3
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      OPENAI_API_BASE: ${OPENAI_API_BASE}
+      OPENAI_API_VERSION: ${OPENAI_API_VERSION}
+      PERSONA_LLM_MODEL: ${PERSONA_LLM_MODEL:-azure/gpt-5-chat}
+      AGENT_URL: ${AGENT_URL}
+      AGENT_PORT: ${AGENT_PORT:-5000}
+      AGENT_JWT_TOKEN: ${AGENT_JWT_TOKEN}
+    restart: unless-stopped
+
+  consumer-5:
+    build: .
+    depends_on:
+      - kafka
+      - kafka-init
+    environment:
+      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      KAFKA_TOPIC: simulation-events
+      KAFKA_CONSUMER_GROUP: simulation-consumer-group
+      CONCURRENT_CONVERSATIONS: 20
+      LLM_RATE_LIMIT_RPS: 10
+      MAX_ITERATIONS: 10
+      CONVERSATION_TIMEOUT: 300
+      LLM_TIMEOUT: 30
+      LLM_RETRY_ATTEMPTS: 3
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      OPENAI_API_BASE: ${OPENAI_API_BASE}
+      OPENAI_API_VERSION: ${OPENAI_API_VERSION}
+      PERSONA_LLM_MODEL: ${PERSONA_LLM_MODEL:-azure/gpt-5-chat}
+      AGENT_URL: ${AGENT_URL}
+      AGENT_PORT: ${AGENT_PORT:-5000}
+      AGENT_JWT_TOKEN: ${AGENT_JWT_TOKEN}
+    restart: unless-stopped
